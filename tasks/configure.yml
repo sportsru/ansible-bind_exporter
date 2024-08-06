@@ -9,11 +9,7 @@
   notify: restart bind_exporter
 
 - name: Allow bind_exporter port in SELinux on RedHat OS family
-  seport:
-    ports: "{{ bind_exporter_web_listen_address.split(':')[-1] }}"
-    proto: tcp
-    setype: http_port_t
-    state: present
+  command: /usr/sbin/semanage port -a -t http_port_t -p tcp {{ bind_exporter_web_listen_address.split(':')[-1] }}
   when:
     - ansible_version.full is version_compare('2.4', '>=')
     - ansible_selinux.status == "enabled"
